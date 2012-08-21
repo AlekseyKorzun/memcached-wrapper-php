@@ -1,7 +1,7 @@
 {
 	"name": "memcached/wrapper/php5",
 	"type": "wrapper",
-	"description": "A PHP 5 API client that allows you to interact with Rackspace® Cloud Servers™",
+	"description": "Optimized PHP 5 wrapper for Memcached extension that supports dog-piling, igbinary and local storage",
 	"keywords": ["igbinary", "c10k", "php", "php5", "memcache", "memcached", "cache", "storage", "performance", "scalability", "caching", "optimization", "profile"],
 	"homepage": "https://github.com/AlekseyKorzun/Memcached-Wrapper-PHP5",
 	"license": "MIT",

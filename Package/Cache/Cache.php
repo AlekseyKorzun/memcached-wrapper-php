@@ -9,8 +9,9 @@ use \Memcached;
  * Wrapper for Memcached with local storage support
  *
  * @throws Exception
- * @package cache
+ * @package Cache
  * @see http://pecl.php.net/package/memcached
+ * @see http://pecl.php.net/package/igbinary
  * @author Aleksey Korzun <al.ko@webfoundation.net>
  * @license MIT
  * @link http://www.webfoundation.net
@@ -514,17 +515,17 @@ final class Cache
 				if (count($server) < 2 || count($server) > 3) {
 					throw new Exception(
 						'Invalid server parameters found in passed server array on key ' . $key . ', please see'
-						. 'http://www.php.net/manual/en/memcached.addservers.php'
+						. ' http://www.php.net/manual/en/memcached.addservers.php'
 					);
 				}
 
 				list($ip, $port, $weight) = $server;
 
 				// Check port and weight
-				if (!is_numeric($port) || !is_numeric($weight)) {
+				if (!is_numeric($port) || (!is_null($weight) && !is_numeric($weight))) {
 					throw new Exception(
 						'Invalid server port and/or weight found in passed server array on key ' . $key . ', please see'
-						. 'http://www.php.net/manual/en/memcached.addservers.php'
+						. ' http://www.php.net/manual/en/memcached.addservers.php'
 					);
 				}
 			}
