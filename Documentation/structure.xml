@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project version="2.0.0a8" title="">
-  <file path="Cache.php" hash="5f61fde92b7cc15288ba81a3086a27eb" package="Default">
+  <file path="Cache.php" hash="7c7c71ef4f9e66eb19b4c0506731e8d4" package="Default">
     <namespace-alias name="ArrayObject">ArrayObject</namespace-alias>
     <namespace-alias name="Exception">Exception</namespace-alias>
     <namespace-alias name="Memcached">Memcached</namespace-alias>
@@ -127,366 +127,383 @@ the actual cache) in seconds]]></description>
           </tag>
         </docblock>
       </property>
-      <property final="false" static="true" visibility="protected" line="93" namespace="Cache" package="Default">
-        <name>$configuration</name>
-        <default><![CDATA[array()]]></default>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Cache" line="98" package="Cache">
+        <name>__constructor</name>
+        <full_name>__constructor</full_name>
         <docblock line="88">
-          <description><![CDATA[Loaded configuration parameters]]></description>
+          <description><![CDATA[Class constuctor, passes everything over to initializer]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="88" name="var" description="" type="array">
-            <type by_reference="false">array</type>
-          </tag>
-        </docblock>
-      </property>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="Cache" line="116" package="Cache">
-        <name>__construct</name>
-        <full_name>__construct</full_name>
-        <docblock line="95">
-          <description><![CDATA[Class initializer, creates a new singleton instance of Memcached
-with optimized configuration]]></description>
-          <long-description><![CDATA[]]></long-description>
-          <tag line="95" name="throws" description="we want to bail if Memcached extension is not loaded or if passed server list is invalid" type="\Exception">
-            <type by_reference="false">\Exception</type>
-          </tag>
-          <tag line="95" name="param" description="a list of Memcached servers we will be using, each entry in servers is supposed to be an array containing hostname, port, and optionally, weight of the server Example: $servers = array( array('mem1.domain.com', 11211, 33), array('mem2.domain.com', 11211, 67) ); See: http://www.php.net/manual/en/memcached.addservers.php" type="mixed[]" variable="$servers">
+          <tag line="88" name="see" description="\Cache\Cache::initialize();" refers="\Cache\Cache::initialize();"/>
+          <tag line="88" name="param" description="a list of Memcached servers we will be using" type="mixed[]" variable="$servers">
             <type by_reference="false">mixed[]</type>
           </tag>
-          <tag line="95" name="param" description="an optional prefix for this cache pool" type="string" variable="$prefix">
+          <tag line="88" name="param" description="an optional prefix for this cache pool" type="string" variable="$prefix">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="95" name="return" description="" type="void">
+          <tag line="88" name="return" description="" type="void">
             <type by_reference="false">void</type>
           </tag>
         </docblock>
-        <argument line="116">
+        <argument line="98">
           <name>$servers</name>
           <default><![CDATA[]]></default>
           <type>array</type>
         </argument>
-        <argument line="116">
+        <argument line="98">
           <name>$prefix</name>
           <default><![CDATA[null]]></default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="161" package="Cache">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="Cache" line="124" package="Cache">
+        <name>__construct</name>
+        <full_name>__construct</full_name>
+        <docblock line="103">
+          <description><![CDATA[Class initializer, creates a new singleton instance of Memcached
+with optimized configuration]]></description>
+          <long-description><![CDATA[]]></long-description>
+          <tag line="103" name="throws" description="we want to bail if Memcached extension is not loaded or if passed server list is invalid" type="\Exception">
+            <type by_reference="false">\Exception</type>
+          </tag>
+          <tag line="103" name="param" description="a list of Memcached servers we will be using, each entry in servers is supposed to be an array containing hostname, port, and optionally, weight of the server Example: $servers = array( array('mem1.domain.com', 11211, 33), array('mem2.domain.com', 11211, 67) ); See: http://www.php.net/manual/en/memcached.addservers.php" type="mixed[]" variable="$servers">
+            <type by_reference="false">mixed[]</type>
+          </tag>
+          <tag line="103" name="param" description="an optional prefix for this cache pool" type="string" variable="$prefix">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="103" name="return" description="" type="void">
+            <type by_reference="false">void</type>
+          </tag>
+        </docblock>
+        <argument line="124">
+          <name>$servers</name>
+          <default><![CDATA[]]></default>
+          <type>array</type>
+        </argument>
+        <argument line="124">
+          <name>$prefix</name>
+          <default><![CDATA[null]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="174" package="Cache">
         <name>instance</name>
         <full_name>instance</full_name>
-        <docblock line="153">
+        <docblock line="166">
           <description><![CDATA[Retrieve an active instance of Memcached, if instance was not created
 attempt to create one.]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="153" name="throws" description="if this class was never setup via constructor" type="\Exception">
+          <tag line="166" name="throws" description="if this class was never setup via constructor" type="\Exception">
             <type by_reference="false">\Exception</type>
           </tag>
-          <tag line="153" name="see" description="\Cache\Cache::__constructor()" refers="\Cache\Cache::__constructor()"/>
-          <tag line="153" name="return" description="" type="\Memcached">
+          <tag line="166" name="see" description="\Cache\Cache::__constructor()" refers="\Cache\Cache::__constructor()"/>
+          <tag line="166" name="return" description="" type="\Memcached">
             <type by_reference="false">\Memcached</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="178" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="191" package="Cache">
         <name>delete</name>
         <full_name>delete</full_name>
-        <docblock line="172">
+        <docblock line="185">
           <description><![CDATA[Delete key(s) from cache and local storage]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="172" name="param" description="array of keys to delete or a single key" type="string[]|string" variable="$keys">
+          <tag line="185" name="param" description="array of keys to delete or a single key" type="string[]|string" variable="$keys">
             <type by_reference="false">string[]</type>
             <type by_reference="false">string</type>
           </tag>
-          <tag line="172" name="return" description="returns false if it failed to delete any of the keys" type="bool">
+          <tag line="185" name="return" description="returns false if it failed to delete any of the keys" type="bool">
             <type by_reference="false">bool</type>
           </tag>
         </docblock>
-        <argument line="178">
+        <argument line="191">
           <name>$keys</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="217" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="230" package="Cache">
         <name>set</name>
         <full_name>set</full_name>
-        <docblock line="208">
+        <docblock line="221">
           <description><![CDATA[Add a new cached record using passed resource and key association]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="208" name="throws" description="if the key is over 250 bytes" type="\Exception">
+          <tag line="221" name="throws" description="if the key is over 250 bytes" type="\Exception">
             <type by_reference="false">\Exception</type>
           </tag>
-          <tag line="208" name="param" description="key to store passed resource under" type="string" variable="$key">
+          <tag line="221" name="param" description="key to store passed resource under" type="string" variable="$key">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="208" name="param" description="resource you want to cache" type="mixed" variable="$resource">
+          <tag line="221" name="param" description="resource you want to cache" type="mixed" variable="$resource">
             <type by_reference="false">mixed</type>
           </tag>
-          <tag line="208" name="param" description="when should this key expire in seconds" type="int" variable="$ttl">
+          <tag line="221" name="param" description="when should this key expire in seconds" type="int" variable="$ttl">
             <type by_reference="false">int</type>
           </tag>
-          <tag line="208" name="return" description="" type="bool">
+          <tag line="221" name="return" description="" type="bool">
             <type by_reference="false">bool</type>
           </tag>
         </docblock>
-        <argument line="217">
+        <argument line="230">
           <name>$key</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
-        <argument line="217">
+        <argument line="230">
           <name>$resource</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
-        <argument line="217">
+        <argument line="230">
           <name>$ttl</name>
           <default><![CDATA[self::DEFAULT_TTL]]></default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="255" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="268" package="Cache">
         <name>get</name>
         <full_name>get</full_name>
-        <docblock line="243">
+        <docblock line="256">
           <description><![CDATA[Retrieve data based on provided key from cache pool, this method
 will call either getArray or getSimple depending on amount of keys
 requested.]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="243" name="param" description="an array of keys or a single key to look-up from cache" type="string[]|string" variable="$keys">
+          <tag line="256" name="param" description="an array of keys or a single key to look-up from cache" type="string[]|string" variable="$keys">
             <type by_reference="false">string[]</type>
             <type by_reference="false">string</type>
           </tag>
-          <tag line="243" name="param" description="where to store retrieved resource" type="mixed" variable="$resource">
+          <tag line="256" name="param" description="where to store retrieved resource" type="mixed" variable="$resource">
             <type by_reference="false">mixed</type>
           </tag>
-          <tag line="243" name="param" description="if you wish to remove key from pool after retrieving resource associated with this you can pass this as true" type="bool" variable="$purge">
+          <tag line="256" name="param" description="if you wish to remove key from pool after retrieving resource associated with this you can pass this as true" type="bool" variable="$purge">
             <type by_reference="false">bool</type>
           </tag>
-          <tag line="243" name="return" description="returns true on a successful request, false on a failure or forced expiration" type="bool">
+          <tag line="256" name="return" description="returns true on a successful request, false on a failure or forced expiration" type="bool">
             <type by_reference="false">bool</type>
           </tag>
         </docblock>
-        <argument line="255">
+        <argument line="268">
           <name>$keys</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
-        <argument line="255">
+        <argument line="268">
           <name>$resource</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
-        <argument line="255">
+        <argument line="268">
           <name>$purge</name>
           <default><![CDATA[false]]></default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="304" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="317" package="Cache">
         <name>getArray</name>
         <full_name>getArray</full_name>
-        <docblock line="297">
+        <docblock line="310">
           <description><![CDATA[Retrieve multiple resources from cache pool and/or local storage]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="297" name="param" description="array of keys to look-up from cache" type="string[]" variable="$keys">
+          <tag line="310" name="param" description="array of keys to look-up from cache" type="string[]" variable="$keys">
             <type by_reference="false">string[]</type>
           </tag>
-          <tag line="297" name="return" description="returns array of retrieved resources or false if look up fails" type="mixed[]|bool">
+          <tag line="310" name="return" description="returns array of retrieved resources or false if look up fails" type="mixed[]|bool">
             <type by_reference="false">mixed[]</type>
             <type by_reference="false">bool</type>
           </tag>
         </docblock>
-        <argument line="304">
+        <argument line="317">
           <name>$keys</name>
           <default><![CDATA[]]></default>
           <type>array</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="356" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="369" package="Cache">
         <name>getSimple</name>
         <full_name>getSimple</full_name>
-        <docblock line="350">
+        <docblock line="363">
           <description><![CDATA[Retrieve single resource from cache pool / local storage]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="350" name="param" description="key to look-up from cache" type="string" variable="$key">
+          <tag line="363" name="param" description="key to look-up from cache" type="string" variable="$key">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="350" name="return" description="returns cached resource or false on failure" type="mixed|bool">
+          <tag line="363" name="return" description="returns cached resource or false on failure" type="mixed|bool">
             <type by_reference="false">mixed</type>
             <type by_reference="false">bool</type>
           </tag>
         </docblock>
-        <argument line="356">
+        <argument line="369">
           <name>$key</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="388" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="401" package="Cache">
         <name>unwrap</name>
         <full_name>unwrap</full_name>
-        <docblock line="378">
+        <docblock line="391">
           <description><![CDATA[Get requested data back into memory while setting a delayed cache entry
 if data is expiring soon]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="378" name="see" description="\Cache\http://highscalability.com/strategy-break-memcache-dog-pile" refers="\Cache\http://highscalability.com/strategy-break-memcache-dog-pile"/>
-          <tag line="378" name="param" description="key that you are retrieving" type="string" variable="$key">
+          <tag line="391" name="see" description="\Cache\http://highscalability.com/strategy-break-memcache-dog-pile" refers="\Cache\http://highscalability.com/strategy-break-memcache-dog-pile"/>
+          <tag line="391" name="param" description="key that you are retrieving" type="string" variable="$key">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="378" name="param" description="packed data that we got back from cache pool" type="mixed[]" variable="$data">
+          <tag line="391" name="param" description="packed data that we got back from cache pool" type="mixed[]" variable="$data">
             <type by_reference="false">mixed[]</type>
           </tag>
-          <tag line="378" name="return" description="returns cached resource or false if invalid data was passed for unwrapping" type="mixed|bool">
+          <tag line="391" name="return" description="returns cached resource or false if invalid data was passed for unwrapping" type="mixed|bool">
             <type by_reference="false">mixed</type>
             <type by_reference="false">bool</type>
           </tag>
         </docblock>
-        <argument line="388">
+        <argument line="401">
           <name>$key</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
-        <argument line="388">
+        <argument line="401">
           <name>$data</name>
           <default><![CDATA[]]></default>
           <type>array</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="419" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="432" package="Cache">
         <name>wrap</name>
         <full_name>wrap</full_name>
-        <docblock line="411">
+        <docblock line="424">
           <description><![CDATA[Wrap new cached resource into an array containing TTL stamp]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="411" name="see" description="\Cache\http://highscalability.com/strategy-break-memcache-dog-pile" refers="\Cache\http://highscalability.com/strategy-break-memcache-dog-pile"/>
-          <tag line="411" name="param" description="resource that is getting cached" type="mixed" variable="$resource">
+          <tag line="424" name="see" description="\Cache\http://highscalability.com/strategy-break-memcache-dog-pile" refers="\Cache\http://highscalability.com/strategy-break-memcache-dog-pile"/>
+          <tag line="424" name="param" description="resource that is getting cached" type="mixed" variable="$resource">
             <type by_reference="false">mixed</type>
           </tag>
-          <tag line="411" name="param" description="internal extended expiration" type="int" variable="$ttl">
+          <tag line="424" name="param" description="internal extended expiration" type="int" variable="$ttl">
             <type by_reference="false">int</type>
           </tag>
-          <tag line="411" name="return" description="returns packed resource with TTL stamp to store in cache" type="mixed[]">
+          <tag line="424" name="return" description="returns packed resource with TTL stamp to store in cache" type="mixed[]">
             <type by_reference="false">mixed[]</type>
           </tag>
         </docblock>
-        <argument line="419">
+        <argument line="432">
           <name>$resource</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
-        <argument line="419">
+        <argument line="432">
           <name>$ttl</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="437" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="450" package="Cache">
         <name>getServerByKey</name>
         <full_name>getServerByKey</full_name>
-        <docblock line="431">
+        <docblock line="444">
           <description><![CDATA[Returns server IP passed key is mapped to]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="431" name="param" description="key to look up server by" type="string" variable="$key">
+          <tag line="444" name="param" description="key to look up server by" type="string" variable="$key">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="431" name="return" description="returns server IP or false on a failure" type="string|bool">
+          <tag line="444" name="return" description="returns server IP or false on a failure" type="string|bool">
             <type by_reference="false">string</type>
             <type by_reference="false">bool</type>
           </tag>
         </docblock>
-        <argument line="437">
+        <argument line="450">
           <name>$key</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="454" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="protected" namespace="Cache" line="467" package="Cache">
         <name>store</name>
         <full_name>store</full_name>
-        <docblock line="447">
+        <docblock line="460">
           <description><![CDATA[Store data locally]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="447" name="param" description="key to save resource under" type="string" variable="$key">
+          <tag line="460" name="param" description="key to save resource under" type="string" variable="$key">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="447" name="param" description="what you are storing in cache" type="mixed" variable="$resource">
+          <tag line="460" name="param" description="what you are storing in cache" type="mixed" variable="$resource">
             <type by_reference="false">mixed</type>
           </tag>
-          <tag line="447" name="return" description="resource that we attempted to store" type="mixed">
+          <tag line="460" name="return" description="resource that we attempted to store" type="mixed">
             <type by_reference="false">mixed</type>
           </tag>
         </docblock>
-        <argument line="454">
+        <argument line="467">
           <name>$key</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
-        <argument line="454">
+        <argument line="467">
           <name>$resource</name>
           <default><![CDATA[]]></default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="468" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="481" package="Cache">
         <name>isStorageEnabled</name>
         <full_name>isStorageEnabled</full_name>
-        <docblock line="463">
+        <docblock line="476">
           <description><![CDATA[Checks if local storage is enabled]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="463" name="return" description="returns true if local storage is enabled false otherwise" type="bool">
+          <tag line="476" name="return" description="returns true if local storage is enabled false otherwise" type="bool">
             <type by_reference="false">bool</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="478" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="491" package="Cache">
         <name>deactivate</name>
         <full_name>deactivate</full_name>
-        <docblock line="473">
+        <docblock line="486">
           <description><![CDATA[Deactivate caching]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="473" name="return" description="" type="void">
+          <tag line="486" name="return" description="" type="void">
             <type by_reference="false">void</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="488" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="501" package="Cache">
         <name>activate</name>
         <full_name>activate</full_name>
-        <docblock line="483">
+        <docblock line="496">
           <description><![CDATA[Activate caching]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="483" name="return" description="" type="void">
+          <tag line="496" name="return" description="" type="void">
             <type by_reference="false">void</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="498" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="511" package="Cache">
         <name>isActive</name>
         <full_name>isActive</full_name>
-        <docblock line="493">
+        <docblock line="506">
           <description><![CDATA[Check if caching is currently active]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="493" name="return" description="returns true if caching is active otherwise false" type="bool">
+          <tag line="506" name="return" description="returns true if caching is active otherwise false" type="bool">
             <type by_reference="false">bool</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="510" package="Cache">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="Cache" line="523" package="Cache">
         <name>validateServers</name>
         <full_name>validateServers</full_name>
-        <docblock line="503">
+        <docblock line="516">
           <description><![CDATA[Validate array of cache servers that should be loaded to Memcached extension]]></description>
           <long-description><![CDATA[]]></long-description>
-          <tag line="503" name="throws" description="if we detect something out of specification" type="\Exception">
+          <tag line="516" name="throws" description="if we detect something out of specification" type="\Exception">
             <type by_reference="false">\Exception</type>
           </tag>
-          <tag line="503" name="param" description="a list of Memcached servers we will be using" type="mixed[]" variable="$servers">
+          <tag line="516" name="param" description="a list of Memcached servers we will be using" type="mixed[]" variable="$servers">
             <type by_reference="false">mixed[]</type>
           </tag>
-          <tag line="503" name="return" description="" type="void">
+          <tag line="516" name="return" description="" type="void">
             <type by_reference="false">void</type>
           </tag>
         </docblock>
-        <argument line="510">
+        <argument line="523">
           <name>$servers</name>
           <default><![CDATA[]]></default>
           <type>array</type>

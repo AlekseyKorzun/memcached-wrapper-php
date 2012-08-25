@@ -58,6 +58,7 @@
 <li class="method public "><a href="#__construct" title="__construct :: Class initializer, creates a new singleton instance of Memcached
 with optimized configuration"><span class="description">Class initializer, creates a new singleton instance of Memcached
 with optimized configuration</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#__constructor" title="__constructor :: Class constuctor, passes everything over to initializer"><span class="description">Class constuctor, passes everything over to initializer</span><pre>__constructor()</pre></a></li>
 <li class="method public "><a href="#activate" title="activate :: Activate caching"><span class="description">Activate caching</span><pre>activate()</pre></a></li>
 <li class="method public "><a href="#deactivate" title="deactivate :: Deactivate caching"><span class="description">Deactivate caching</span><pre>deactivate()</pre></a></li>
 <li class="method public "><a href="#delete" title="delete :: Delete key(s) from cache and local storage"><span class="description">Delete key(s) from cache and local storage</span><pre>delete()</pre></a></li>
@@ -85,7 +86,6 @@ if data is expiring soon</span><pre>unwrap()</pre></a></li>
 <li class="nav-header">
 <i class="icon-custom icon-property"></i> Properties</li>
 <li class="nav-header protected">» Protected</li>
-<li class="property protected "><a href="#%24configuration" title="$configuration :: Loaded configuration parameters"><span class="description">Loaded configuration parameters</span><pre>$configuration</pre></a></li>
 <li class="property protected "><a href="#%24isActive" title="$isActive :: Cache activation switch"><span class="description">Cache activation switch</span><pre>$isActive</pre></a></li>
 <li class="property protected "><a href="#%24isResourceExpired" title="$isResourceExpired :: Indicates that current look-up will expire shortly (dog-pile)"><span class="description">Indicates that current look-up will expire shortly (dog-pile)</span><pre>$isResourceExpired</pre></a></li>
 <li class="property protected "><a href="#%24isResourceInvalid" title="$isResourceInvalid :: Marks current request as invalid (not-found, etc)"><span class="description">Marks current request as invalid (not-found, etc)</span><pre>$isResourceInvalid</pre></a></li>
@@ -176,6 +176,25 @@ with optimized configuration</h2>
 <th><code><a href="http://php.net/manual/en/class.exception.php">\Exception</a></code></th>
 <td>we want to bail if Memcached extension is not loaded or if passed server list is invalid</td>
 </tr></table>
+</div></div>
+</div>
+<a name="__constructor" id="__constructor"></a><div class="element clickable method public __constructor" data-toggle="collapse" data-target=".__constructor .collapse">
+<h2>Class constuctor, passes everything over to initializer</h2>
+<pre>__constructor(array $servers, string $prefix) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td>\Cache\Cache::initialize();</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$servers</h4>
+<code>mixed[]</code><p>a list of Memcached servers we will be using</p></div>
+<div class="subelement argument">
+<h4>$prefix</h4>
+<code>string</code><p>an optional prefix for this cache pool</p></div>
 </div></div>
 </div>
 <a name="activate" id="activate"></a><div class="element clickable method public activate" data-toggle="collapse" data-target=".activate .collapse">
@@ -425,12 +444,6 @@ if data is expiring soon</h2>
 </div>
 <h3>
 <i class="icon-custom icon-property"></i> Properties</h3>
-<a name="%24configuration" id="$configuration"> </a><div class="element clickable property protected $configuration" data-toggle="collapse" data-target=".$configuration .collapse">
-<h2>Loaded configuration parameters</h2>
-<pre>$configuration : array</pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
-</div>
 <a name="%24isActive" id="$isActive"> </a><div class="element clickable property protected $isActive" data-toggle="collapse" data-target=".$isActive .collapse">
 <h2>Cache activation switch</h2>
 <pre>$isActive : bool</pre>
@@ -497,7 +510,7 @@ the actual cache) in seconds</h2>
 <div class="row"><footer class="span12">
             Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
             Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a8</a> and<br>
-            generated on 2012-08-21T17:21:27-04:00.<br></footer></div>
+            generated on 2012-08-25T17:10:48-04:00.<br></footer></div>
 </div>
 </body>
 </html>
