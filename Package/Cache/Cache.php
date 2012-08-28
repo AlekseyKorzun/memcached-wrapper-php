@@ -121,7 +121,7 @@ final class Cache
      * @param string $prefix an optional prefix for this cache pool
      * @return void
      */
-    public function __construct(array $servers, $prefix = null)
+    public static function initialize(array $servers, $prefix = null)
     {
         // Do not allow multiple instances
         if (self::$memcached) {
