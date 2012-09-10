@@ -317,35 +317,32 @@ final class Cache
     protected static function getArray(array $keys)
     {
         // Initialize variables
-        $results = $missing = array();
+        $results = array();
 
         // Check local storage first
         if (self::isStorageEnabled()) {
-            for ($i = 0; $i < count($keys); ++$i) {
-                $key = $keys[$i];
-
-                // Attempt to retrieve record within storage
+            foreach ($keys as $pointer => $key) {
                 if (isset(self::$storage[$key])) {
-                    $results[$keys[$i]] = self::$storage[$key];
+                    $results[$key] = self::$storage[$key];
                     continue;
                 }
 
-                // Add non-instance hits to missing array for further look up(s)
-                $missing[$key] = $keys[$i];
+                // Remove matches from look up
+                unset($keys[$pointer]);
             }
         }
 
         // All results were retrieved within local storage
-        if (empty($missing)) {
+        if (empty($keys)) {
             return $results;
         }
 
         // Look up keys within cache pool
-        $resources = self::instance()->getMulti(array_keys($missing));
+        $resources = self::instance()->getMulti(array_values($keys));
 
         if (self::instance()->getResultCode() == Memcached::RES_SUCCESS) {
-            foreach ($resource as $key => $resource) {
-                $results[$missing[$key]] = self::unwrap($key, $resource);
+            foreach ($resources as $key => $resource) {
+                $results[$key] = self::unwrap($key, $resource);
             }
         }
 
@@ -550,4 +547,5 @@ final class Cache
         }
     }
 }
+
 
