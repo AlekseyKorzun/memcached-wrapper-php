@@ -122,7 +122,7 @@ class Cache
         $this->memcached = new Memcached($pool);
 
         // Use faster compression if available
-        if (extension_loaded('igbinary')) {
+        if (Memcached::HAVE_IGBINARY) {
             $this->instance()->setOption(Memcached::OPT_SERIALIZER, Memcached::SERIALIZER_IGBINARY);
         }
 
