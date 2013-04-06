@@ -31,7 +31,7 @@ directory of this distribution to generate vendor/ directory with a cross system
 
 Please see Examples directory for a simple run down of functionality.
 
-## Additional information
+## Additional informaton
 
 Memcached: http://pecl.php.net/package/memcached 
 IgBinary: http://pecl.php.net/package/igbinary

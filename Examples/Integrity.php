@@ -5,7 +5,7 @@
  *
  * @package Cache
  * @subpackage Cache\Examples
- * @version 0.2
+ * @version 0.1
  * @license MIT
  * @author Aleksey Korzun <al.ko@webfoundation.net>
  * @link https://github.com/AlekseyKorzun/Memcached-Wrapper-PHP-5
@@ -23,17 +23,18 @@ use Cache\Cache;
 // Key to use for integrity tests
 define('KEY', 'key');
 
-// List of pools
+// Edit list of servers you wish to test
 $servers = array(
     array('127.0.0.1', 11211, 10),
     array('127.0.0.1', 11211, 20)
 );
 
 try {
-    $cache = new Cache('pool', $servers);
+    // Initialize
+    $cache = new Cache($servers, 'prefix');
 
     // Attempt to retrieve previously cached result from pool (run this twice)
-    if (!$cache->get(KEY, $resource)) {
+    if (!$cache::get(KEY, $resource)) {
         print "Key was not found in our cache pool!\n";
 
         // Create test resource
@@ -41,7 +42,7 @@ try {
         $resource->name = 'Test';
 
         // If nothing was found during our cache look up, save resource to cache pool
-        if ($cache->set(KEY, $resource)) {
+        if ($cache::set(KEY, $resource)) {
             print "Stored resource in cache pool!\n";
         } else {
             print "Failed to store resource in cache pool!\n";
@@ -50,13 +51,13 @@ try {
         print "Key was found in our cache pool!\n";
 
         // Let's get fancy
-        $server = $cache->getServerByKey(KEY);
+        $server = $cache::getServerByKey(KEY);
         if ($server) {
-            print "Server key is mapped to: " . print_r($server) . "\n";
+            print "Server key is mapped to: " . $server . "\n";
         }
 
         // We retrieved resource from cache, let's make sure delete works
-        if ($cache->delete(KEY)) {
+        if ($cache::delete(KEY)) {
             print "Deleted resource from cache!\n";
         } else {
             print "Failed to delete resource from cache!\n";

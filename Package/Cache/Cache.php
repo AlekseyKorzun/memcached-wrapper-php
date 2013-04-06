@@ -13,12 +13,11 @@ use \Memcached;
  * @see http://pecl.php.net/package/memcached
  * @see http://pecl.php.net/package/igbinary
  * @author Aleksey Korzun <al.ko@webfoundation.net>
- * @version 0.2
  * @license MIT
  * @link http://www.webfoundation.net
  * @link http://www.alekseykorzun.com
  */
-class Cache
+final class Cache
 {
     /**
      * Dog-pile prevention delay in seconds, adjust if you have a constant miss
@@ -49,42 +48,57 @@ class Cache
      *
      * @var Memcached
      */
-    protected $memcached;
+    private static $memcached;
 
     /**
      * Local storage
      *
      * @var array
      */
-    protected $storage = array();
+    protected static $storage = array();
 
     /**
      * Current setting for local storage
      *
      * @var bool
      */
-    protected $isStorageEnabled = true;
+    protected static $isStorageEnabled = true;
 
     /**
      * Indicates that current look-up will expire shortly (dog-pile)
      *
      * @var bool
      */
-    protected $isResourceExpired = false;
+    protected static $isResourceExpired = false;
 
     /**
      * Marks current request as invalid (not-found, etc)
      *
      * @var bool
      */
-    protected $isResourceInvalid = false;
+    protected static $isResourceInvalid = false;
 
     /**
      * Cache activation switch
      *
      * @var bool
      */
-    protected $isActive = true;
+    protected static $isActive = true;
+
+    /**
+     * Class constuctor, passes everything over to initializer
+     *
+     * @see Cache::initialize();
+     *
+     * @param mixed[] $servers a list of Memcached servers we will be using
+     * @param string $prefix an optional prefix for this cache pool
+     *
+     * @return void
+     */
+    public function __constructor(array $servers, $prefix = null)
+    {
+        self::initialize($servers, $prefix);
+    }
 
     /**
      * Class initializer, creates a new singleton instance of Memcached
@@ -92,7 +106,6 @@ class Cache
      *
      * @throws Exception we want to bail if Memcached extension is not loaded or
      * if passed server list is invalid
-     * @param string $pool create an instance of cache client with a specfic pool
      * @param mixed[] $servers a list of Memcached servers we will be using, each entry
      * in servers is supposed to be an array containing hostname, port, and
      * optionally, weight of the server
@@ -105,41 +118,68 @@ class Cache
      *  );
      *
      * See: http://www.php.net/manual/en/memcached.addservers.php
+     * @param string $prefix an optional prefix for this cache pool
+     * @return void
      */
-    public function __construct($pool = null, array $servers = null)
+    public static function initialize(array $servers, $prefix = null)
     {
+        // Do not allow multiple instances
+        if (self::$memcached) {
+            throw new Exception('This class may not be initialized more than once');
+        }
+
         // Make sure extension is available at the run-time
         if (!extension_loaded('memcached')) {
             throw new Exception('Memcached extension failed to load.');
         }
 
         // Validate passed server list
-        if (!is_null($servers)) {
-            $this->validateServers($servers);
-        }
+        self::validateServers($servers);
 
         // Create a new Memcached instance and set optimized options
-        $this->memcached = new Memcached($pool);
+        self::$memcached = new Memcached($prefix);
 
         // Use faster compression if available
-        if (Memcached::HAVE_IGBINARY) {
-            $this->instance()->setOption(Memcached::OPT_SERIALIZER, Memcached::SERIALIZER_IGBINARY);
+        if (extension_loaded('igbinary')) {
+            self::instance()->setOption(Memcached::OPT_SERIALIZER, Memcached::SERIALIZER_IGBINARY);
         }
 
-        $this->instance()->setOption(Memcached::OPT_DISTRIBUTION, Memcached::DISTRIBUTION_CONSISTENT);
-        $this->instance()->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-        $this->instance()->setOption(Memcached::OPT_NO_BLOCK, true);
-        $this->instance()->setOption(Memcached::OPT_TCP_NODELAY, true);
-        $this->instance()->setOption(Memcached::OPT_COMPRESSION, true);
-        $this->instance()->setOption(Memcached::OPT_CONNECT_TIMEOUT, 2);
-
-        if (!is_null($servers)) {
-            // Since we are using persistent connections, make sure servers are not
-            // reloaded
-            if (!count($this->instance()->getServerList())) {
-                $this->instance()->addServers($servers);
-            }
+        // If prefix is passed, use it
+        if (!is_null($prefix)) {
+            self::instance()->setOption(Memcached::OPT_PREFIX_KEY, (string) $prefix);
         }
+
+        self::instance()->setOption(Memcached::OPT_DISTRIBUTION, Memcached::DISTRIBUTION_CONSISTENT);
+        self::instance()->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
+        self::instance()->setOption(Memcached::OPT_NO_BLOCK, true);
+        self::instance()->setOption(Memcached::OPT_TCP_NODELAY, true);
+        self::instance()->setOption(Memcached::OPT_COMPRESSION, true);
+        self::instance()->setOption(Memcached::OPT_CONNECT_TIMEOUT, 2);
+
+        // Since we are using persistent connections, make sure servers are not
+        // reloaded
+        if (!count(self::instance()->getServerList())) {
+            self::instance()->addServers($servers);
+        }
+    }
+
+    /**
+     * Retrieve an active instance of Memcached, if instance was not created
+     * attempt to create one.
+     *
+     * @throws Exception if this class was never setup via constructor
+     * @see Cache::__constructor()
+     * @return Memcached
+     */
+    protected static function instance()
+    {
+        if (!self::$memcached) {
+            throw new Exception(
+                'You must load and setup this class via constructor prior to using it.'
+            );
+        }
+
+        return self::$memcached;
     }
 
     /**
@@ -148,7 +188,7 @@ class Cache
      * @param string[]|string $keys array of keys to delete or a single key
      * @return bool returns false if it failed to delete any of the keys
      */
-    public function delete($keys)
+    public static function delete($keys)
     {
         // Convert keys to an array
         if (!is_array($keys)) {
@@ -158,17 +198,17 @@ class Cache
         if ($keys) {
             foreach ($keys as $key) {
                 // Attempt to remove data from Memcached pool
-                if (!$this->instance()->delete($key)) {
+                if (!self::instance()->delete($key)) {
                     // If we were unable to remove it only care if resource was not stored
-                    if ($this->instance()->getResultCode() != Memcached::RES_NOTSTORED) {
+                    if (self::instance()->getResultCode() != Memcached::RES_NOTSTORED) {
                         return false;
                     }
                 }
 
                 // Also purge from our instance upon successful removal or if item
                 // is no longer stored in our cache pool
-                if (isset($this->storage[$key])) {
-                    unset($this->storage[$key]);
+                if (isset(self::$storage[$key])) {
+                    unset(self::$storage[$key]);
                 }
             }
 
@@ -187,10 +227,10 @@ class Cache
      * @param int $ttl when should this key expire in seconds
      * @return bool
      */
-    public function set($key, $resource, $ttl = self::DEFAULT_TTL)
+    public static function set($key, $resource, $ttl = self::DEFAULT_TTL)
     {
         // If caching is turned off return false
-        if (!$this->isActive()) {
+        if (!self::isActive()) {
             return false;
         }
 
@@ -198,14 +238,14 @@ class Cache
         $key = str_replace(' ', '', $key);
 
         // Make sure we are under the proper limit
-        if (strlen($this->instance()->getOption(Memcached::OPT_PREFIX_KEY) . $key) > 250) {
+        if (strlen(self::instance()->getOption(Memcached::OPT_PREFIX_KEY) . $key) > 250) {
             throw new Exception('The passed cache key is over 250 bytes');
         }
 
         // Save our data within cache pool
-        if ($this->instance()->set($key, $this->wrap($resource, $ttl), $ttl)) {
+        if (self::instance()->set($key, self::wrap($resource, $ttl), $ttl)) {
             // Attempt to store data locally
-            $this->store($key, $resource);
+            self::store($key, $resource);
 
             return true;
         }
@@ -225,15 +265,15 @@ class Cache
      * @return bool returns true on a successful request, false on a failure or forced
      * expiration
      */
-    public function get($keys, &$resource, $purge = false)
+    public static function get($keys, &$resource, $purge = false)
     {
         // If caching is turned off return false
-        if (!$this->isActive()) {
+        if (!self::isActive()) {
             return false;
         }
 
         // Remove expired flag and make sure item is set to valid
-        $this->isResourceExpired = $this->isResourceInvalid = false;
+        self::$isResourceExpired = self::$isResourceInvalid = false;
 
         // Prevent multi-get requests if array only contains a single key
         if (is_array($keys)) {
@@ -245,8 +285,8 @@ class Cache
 
         // Determine method of retrieval
         $resource = (is_array($keys)
-                        ? $this->getArray($keys)
-                        : $this->getSimple(str_replace(' ', '', $keys)));
+                        ? self::getArray($keys)
+                        : self::getSimple(str_replace(' ', '', $keys)));
 
         // If multi get by-pass is activated, convert result to an array
         if (isset($isDiverted)) {
@@ -255,13 +295,13 @@ class Cache
 
         // If key is marked as expired (needs to be updated within this request)
         // or not found return false
-        if ($this->isResourceExpired || $this->isResourceInvalid) {
+        if (self::$isResourceExpired || self::$isResourceInvalid) {
             return false;
         }
 
         // If purge was passed, delete requested resource
         if ($purge) {
-            $this->delete($keys);
+            self::delete($keys);
         }
 
         return true;
@@ -274,16 +314,16 @@ class Cache
      * @return mixed[]|bool returns array of retrieved resources or false
      * if look up fails
      */
-    protected function getArray(array $keys)
+    protected static function getArray(array $keys)
     {
         // Initialize variables
         $results = array();
 
         // Check local storage first
-        if ($this->isStorageEnabled()) {
+        if (self::isStorageEnabled()) {
             foreach ($keys as $pointer => $key) {
-                if (isset($this->storage[$key])) {
-                    $results[$key] = $this->storage[$key];
+                if (isset(self::$storage[$key])) {
+                    $results[$key] = self::$storage[$key];
                     continue;
                 }
 
@@ -298,11 +338,11 @@ class Cache
         }
 
         // Look up keys within cache pool
-        $resources = $this->instance()->getMulti(array_values($keys));
+        $resources = self::instance()->getMulti(array_values($keys));
 
-        if ($this->instance()->getResultCode() == Memcached::RES_SUCCESS) {
+        if (self::instance()->getResultCode() == Memcached::RES_SUCCESS) {
             foreach ($resources as $key => $resource) {
-                $results[$key] = $this->unwrap($key, $resource);
+                $results[$key] = self::unwrap($key, $resource);
             }
         }
 
@@ -312,7 +352,7 @@ class Cache
         }
 
         // Mark resource as invalid
-        $this->isResourceInvalid = true;
+        self::$isResourceInvalid = true;
 
         return false;
     }
@@ -323,24 +363,24 @@ class Cache
      * @param string $key key to look-up from cache
      * @return mixed|bool returns cached resource or false on failure
      */
-    protected function getSimple($key)
+    protected static function getSimple($key)
     {
         // Attempt to retrieve record within local storage
-        if ($this->isStorageEnabled()) {
-            if (isset($this->storage[$key])) {
-                return $this->storage[$key];
+        if (self::isStorageEnabled()) {
+            if (isset(self::$storage[$key])) {
+                return self::$storage[$key];
             }
         }
 
         // Attempt to retrieve record within cache pool
-        $resource = $this->instance()->get($key);
+        $resource = self::instance()->get($key);
 
-        if ($this->instance()->getResultCode() == Memcached::RES_SUCCESS) {
-            return $this->unwrap($key, $resource);
+        if (self::instance()->getResultCode() == Memcached::RES_SUCCESS) {
+            return self::unwrap($key, $resource);
         }
 
         // Mark requested resource as invalid
-        $this->isResourceInvalid = true;
+        self::$isResourceInvalid = true;
 
         return false;
     }
@@ -355,7 +395,7 @@ class Cache
      * @return mixed|bool returns cached resource or false if invalid data was
      * passed for unwrapping
      */
-    protected function unwrap($key, array $data)
+    protected static function unwrap($key, array $data)
     {
         // Enforce that data we get back was previously packed
         if (!isset($data['ttl']) || !isset($data['resource'])) {
@@ -369,13 +409,13 @@ class Cache
 
                 // Set the stale value back into cache for a short 'delay'
                 // so no one else tries to write the same data
-                if ($this->instance()->set($key, $data, self::DELAY)) {
-                    $this->isResourceExpired = true;
+                if (self::instance()->set($key, $data, self::DELAY)) {
+                    self::$isResourceExpired = true;
                 }
             }
         }
 
-        return $this->store($key, $data['resource']);
+        return self::store($key, $data['resource']);
     }
 
     /**
@@ -386,7 +426,7 @@ class Cache
      * @param int $ttl internal extended expiration
      * @return mixed[] returns packed resource with TTL stamp to store in cache
      */
-    protected function wrap($resource, $ttl)
+    protected static function wrap($resource, $ttl)
     {
         // The actual cache time must be padded in order to properly maintain internal
         // cache expiration system
@@ -399,16 +439,32 @@ class Cache
     }
 
     /**
+     * Returns server IP passed key is mapped to
+     *
+     * @param string $key key to look up server by
+     * @return string|bool returns server IP or false on a failure
+     */
+    public static function getServerByKey($key)
+    {
+        $server = self::instance()->getServerByKey($key);
+        if ($server) {
+            return $server['host'];
+        }
+
+        return false;
+    }
+
+    /**
      * Store data locally
      *
      * @param string $key key to save resource under
      * @param mixed $resource what you are storing in cache
      * @return mixed resource that we attempted to store
      */
-    protected function store($key, $resource)
+    protected static function store($key, $resource)
     {
-        if ($this->isStorageEnabled()) {
-            $this->storage[$key] = $resource;
+        if (self::isStorageEnabled()) {
+            self::$storage[$key] = $resource;
         }
 
         return $resource;
@@ -419,25 +475,29 @@ class Cache
      *
      * @return bool returns true if local storage is enabled false otherwise
      */
-    public function isStorageEnabled()
+    public static function isStorageEnabled()
     {
-        return (bool) $this->isStorageEnabled;
+        return (bool) self::$isStorageEnabled;
     }
 
     /**
      * Deactivate caching
+     *
+     * @return void
      */
-    public function deactivate()
+    public static function deactivate()
     {
-        $this->isActive = false;
+        self::$isActive = false;
     }
 
     /**
      * Activate caching
+     *
+     * @return void
      */
-    public function activate()
+    public static function activate()
     {
-        $this->isActive = true;
+        self::$isActive = true;
     }
 
     /**
@@ -445,9 +505,9 @@ class Cache
      *
      * @return bool returns true if caching is active otherwise false
      */
-    public function isActive()
+    public static function isActive()
     {
-        return (bool) $this->isActive;
+        return (bool) self::$isActive;
     }
 
     /**
@@ -455,8 +515,9 @@ class Cache
      *
      * @throws Exception if we detect something out of specification
      * @param mixed[] $servers a list of Memcached servers we will be using
+     * @return void
      */
-    public function validateServers(array $servers)
+    public static function validateServers(array $servers)
     {
         if ($servers) {
             foreach ($servers as $key => $server) {
@@ -485,25 +546,6 @@ class Cache
             }
         }
     }
-
-    /**
-     * Retrieve instance of Memcached client
-     *
-     * @return Memcached
-     */
-    public function instance() {
-        return $this->memcached;
-    }
-
-    /**
-     * Pass all method calls directly to instance of Memcached
-     *
-     * @param string $name method that was invoked
-     * @param mixed[] $arguments arguments that were passed to invoked method
-     *
-     * @return mixed
-     */
-    public function __call($name, $arguments) {
-        return $this->instance()->$name(array_shift($arguments));
-    }
 }
+
+
