@@ -18,7 +18,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use \stdClass;
-use Cache\Cache;
+use \Memcached\Wrapper as Cache;
 
 // Key to use for integrity tests
 define('KEY', 'key');

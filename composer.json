@@ -1,5 +1,5 @@
 {
-	"name": "alekseykorzun/memcached-wrapper-php-5",
+	"name": "alekseykorzun/memcached-wrapper-php5",
 	"type": "wrapper",
 	"description": "Optimized PHP 5 wrapper for Memcached extension that supports dog-piling, igbinary and local storage",
 	"keywords": ["igbinary", "c10k", "php", "php5", "memcache", "memcached", "cache", "storage", "performance", "scalability", "caching", "optimization", "profile"],
@@ -18,7 +18,7 @@
 	},
 	"autoload": {
 		"psr-0": {
-			"Cache": "Package/"
+			"Memcached": "src/"
 		}
 	}
 }
