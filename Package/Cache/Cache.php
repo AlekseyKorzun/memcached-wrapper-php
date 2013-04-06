@@ -167,7 +167,7 @@ class Cache
 
                 // Also purge from our instance upon successful removal or if item
                 // is no longer stored in our cache pool
-                if (isset($this->storage[$key])) {
+                if ($this->isStored($key)) {
                     unset($this->storage[$key]);
                 }
             }
@@ -282,7 +282,7 @@ class Cache
         // Check local storage first
         if ($this->isStorageEnabled()) {
             foreach ($keys as $pointer => $key) {
-                if (isset($this->storage[$key])) {
+                if ($this->isStored($key)) {
                     $results[$key] = $this->storage[$key];
                     continue;
                 }
@@ -327,7 +327,7 @@ class Cache
     {
         // Attempt to retrieve record within local storage
         if ($this->isStorageEnabled()) {
-            if (isset($this->storage[$key])) {
+            if ($this->isStored($key)) {
                 return $this->storage[$key];
             }
         }
@@ -422,6 +422,16 @@ class Cache
     public function isStorageEnabled()
     {
         return (bool) $this->isStorageEnabled;
+    }
+
+    /**
+     * Check if passed key is stored using local store
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function isStored($key) {
+        return (bool) isset($this->storage[$key]);
     }
 
     /**
