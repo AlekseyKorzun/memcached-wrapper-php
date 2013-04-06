@@ -285,11 +285,9 @@ class Wrapper
             foreach ($keys as $pointer => $key) {
                 if ($this->isStored($key)) {
                     $results[$key] = $this->storage[$key];
+                    unset($keys[$pointer]);
                     continue;
                 }
-
-                // Remove matches from look up
-                unset($keys[$pointer]);
             }
         }
 
