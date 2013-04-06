@@ -17,7 +17,7 @@ use \Memcached;
  * @link http://www.webfoundation.net
  * @link http://www.alekseykorzun.com
  */
-final class Cache
+class Cache
 {
     /**
      * Dog-pile prevention delay in seconds, adjust if you have a constant miss
@@ -53,7 +53,7 @@ final class Cache
     /**
      * Local storage
      *
-     * @var array
+     * @var string[]
      */
     protected static $storage = array();
 
@@ -92,8 +92,6 @@ final class Cache
      *
      * @param mixed[] $servers a list of Memcached servers we will be using
      * @param string $prefix an optional prefix for this cache pool
-     *
-     * @return void
      */
     public function __constructor(array $servers, $prefix = null)
     {
@@ -119,7 +117,6 @@ final class Cache
      *
      * See: http://www.php.net/manual/en/memcached.addservers.php
      * @param string $prefix an optional prefix for this cache pool
-     * @return void
      */
     public static function initialize(array $servers, $prefix = null)
     {
@@ -137,10 +134,10 @@ final class Cache
         self::validateServers($servers);
 
         // Create a new Memcached instance and set optimized options
-        self::$memcached = new Memcached($prefix);
+        self::$memcached = new Memcached();
 
         // Use faster compression if available
-        if (extension_loaded('igbinary')) {
+        if (Memcached::HAVE_IGBINARY) {
             self::instance()->setOption(Memcached::OPT_SERIALIZER, Memcached::SERIALIZER_IGBINARY);
         }
 
@@ -482,8 +479,6 @@ final class Cache
 
     /**
      * Deactivate caching
-     *
-     * @return void
      */
     public static function deactivate()
     {
@@ -492,8 +487,6 @@ final class Cache
 
     /**
      * Activate caching
-     *
-     * @return void
      */
     public static function activate()
     {
@@ -515,7 +508,6 @@ final class Cache
      *
      * @throws Exception if we detect something out of specification
      * @param mixed[] $servers a list of Memcached servers we will be using
-     * @return void
      */
     public static function validateServers(array $servers)
     {
