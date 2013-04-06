@@ -15,7 +15,7 @@
 /**
  * You must run `composer install` in order to generate autoloader for this example
  */
-//require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use \stdClass;
 use Cache\Cache;
