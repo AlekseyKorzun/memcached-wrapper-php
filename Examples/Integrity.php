@@ -52,7 +52,7 @@ try {
         // Let's get fancy
         $server = $cache->getServerByKey(KEY);
         if ($server) {
-            print "Server key is mapped to: " . $server . "\n";
+            print "Server key is mapped to: " . print_r($server) . "\n";
         }
 
         // We retrieved resource from cache, let's make sure delete works
