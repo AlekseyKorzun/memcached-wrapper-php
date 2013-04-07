@@ -1,0 +1,536 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>phpDocumentor » \Memcached\Wrapper</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">phpDocumentor</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/Library.html"><i class="icon-folder-open"></i> Library</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">1</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">0</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___call" title="__call :: Pass all method calls directly to instance of Memcached"><span class="description">Pass all method calls directly to instance of Memcached</span><pre>__call()</pre></a></li>
+<li class="method public "><a href="#method___construct" title="__construct :: Class initializer, creates a new singleton instance of Memcached
+with optimized configuration"><span class="description">Class initializer, creates a new singleton instance of Memcached
+with optimized configuration</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_activate" title="activate :: Activate caching"><span class="description">Activate caching</span><pre>activate()</pre></a></li>
+<li class="method public "><a href="#method_deactivate" title="deactivate :: Deactivate caching"><span class="description">Deactivate caching</span><pre>deactivate()</pre></a></li>
+<li class="method public "><a href="#method_delete" title="delete :: Delete key(s) from cache and local storage"><span class="description">Delete key(s) from cache and local storage</span><pre>delete()</pre></a></li>
+<li class="method public "><a href="#method_get" title="get :: Retrieve data based on provided key from cache pool, this method
+will call either getArray or getSimple depending on amount of keys
+requested."><span class="description">Retrieve data based on provided key from cache pool, this method
+will call either getArray or getSimple depending on amount of keys
+requested.</span><pre>get()</pre></a></li>
+<li class="method public "><a href="#method_instance" title="instance :: Retrieve instance of Memcached client"><span class="description">Retrieve instance of Memcached client</span><pre>instance()</pre></a></li>
+<li class="method public "><a href="#method_isActive" title="isActive :: Check if caching is currently active"><span class="description">Check if caching is currently active</span><pre>isActive()</pre></a></li>
+<li class="method public "><a href="#method_isStorageEnabled" title="isStorageEnabled :: Checks if local storage is enabled"><span class="description">Checks if local storage is enabled</span><pre>isStorageEnabled()</pre></a></li>
+<li class="method public "><a href="#method_isStored" title="isStored :: Check if passed key is stored using local store"><span class="description">Check if passed key is stored using local store</span><pre>isStored()</pre></a></li>
+<li class="method public "><a href="#method_set" title="set :: Add a new cached record using passed resource and key association"><span class="description">Add a new cached record using passed resource and key association</span><pre>set()</pre></a></li>
+<li class="method public "><a href="#method_validateServers" title="validateServers :: Validate array of cache servers that should be loaded to Memcached extension"><span class="description">Validate array of cache servers that should be loaded to Memcached extension</span><pre>validateServers()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method_getArray" title="getArray :: Retrieve multiple resources from cache pool and/or local storage"><span class="description">Retrieve multiple resources from cache pool and/or local storage</span><pre>getArray()</pre></a></li>
+<li class="method protected "><a href="#method_getSimple" title="getSimple :: Retrieve single resource from cache pool / local storage"><span class="description">Retrieve single resource from cache pool / local storage</span><pre>getSimple()</pre></a></li>
+<li class="method protected "><a href="#method_store" title="store :: Store data locally"><span class="description">Store data locally</span><pre>store()</pre></a></li>
+<li class="method protected "><a href="#method_unwrap" title="unwrap :: Get requested data back into memory while setting a delayed cache entry
+if data is expiring soon"><span class="description">Get requested data back into memory while setting a delayed cache entry
+if data is expiring soon</span><pre>unwrap()</pre></a></li>
+<li class="method protected "><a href="#method_wrap" title="wrap :: Wrap new cached resource into an array containing TTL stamp"><span class="description">Wrap new cached resource into an array containing TTL stamp</span><pre>wrap()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_isActive" title="$isActive :: Cache activation switch"><span class="description"></span><pre>$isActive</pre></a></li>
+<li class="property protected "><a href="#property_isResourceExpired" title="$isResourceExpired :: Indicates that current look-up will expire shortly (dog-pile)"><span class="description"></span><pre>$isResourceExpired</pre></a></li>
+<li class="property protected "><a href="#property_isResourceInvalid" title="$isResourceInvalid :: Marks current request as invalid (not-found, etc)"><span class="description"></span><pre>$isResourceInvalid</pre></a></li>
+<li class="property protected "><a href="#property_isStorageEnabled" title="$isStorageEnabled :: Current setting for local storage"><span class="description"></span><pre>$isStorageEnabled</pre></a></li>
+<li class="property protected "><a href="#property_memcached" title="$memcached :: Instance of Memcached"><span class="description"></span><pre>$memcached</pre></a></li>
+<li class="property protected "><a href="#property_storage" title="$storage :: Local storage"><span class="description"></span><pre>$storage</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_DEFAULT_TTL" title="DEFAULT_TTL :: Default life time of all caches wrapper creates in seconds"><span class="description">Default life time of all caches wrapper creates in seconds</span><pre>DEFAULT_TTL</pre></a></li>
+<li class="constant  "><a href="#constant_DELAY" title="DELAY :: Dog-pile prevention delay in seconds, adjust if you have a constant miss
+of cache after expiration because un-cached call takes more then specified
+delay"><span class="description">Dog-pile prevention delay in seconds, adjust if you have a constant miss
+of cache after expiration because un-cached call takes more then specified
+delay</span><pre>DELAY</pre></a></li>
+<li class="constant  "><a href="#constant_EXTENDED_TTL" title="EXTENDED_TTL :: Parent expiration padding (so internal cache stamp does not expire before
+the actual cache) in seconds"><span class="description">Parent expiration padding (so internal cache stamp does not expire before
+the actual cache) in seconds</span><pre>EXTENDED_TTL</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a id="\Memcached\Wrapper"></a><ul class="breadcrumb">
+<li>
+<a href="../index.html"><i class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/Memcached.html">Memcached</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Memcached.Wrapper.html">Wrapper</a>
+</li>
+</ul>
+<div class="element class">
+<p class="short_description">Wrapper for Memcached with local storage support</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th><code><a href="http://php.net/manual/en/class.exception.php">\Exception</a></code></th>
+<td></td>
+</tr>
+<tr>
+<th>package</th>
+<td><a href="../packages/Library.Cache.html">Library</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Cache</td>
+</tr>
+<tr>
+<th>see</th>
+<td><a href="">\Memcached\http://pecl.php.net/package/memcached</a></td>
+</tr>
+<tr>
+<th>see</th>
+<td><a href="">\Memcached\http://pecl.php.net/package/igbinary</a></td>
+</tr>
+<tr>
+<th>author</th>
+<td><a href="mailto:al.ko@webfoundation.net">Aleksey Korzun</a></td>
+</tr>
+<tr>
+<th>version</th>
+<td>0.2</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/MIT">MIT</a></td>
+</tr>
+<tr>
+<th>link</th>
+<td><a href="http://www.webfoundation.net">http://www.webfoundation.net</a></td>
+</tr>
+<tr>
+<th>link</th>
+<td><a href="http://www.alekseykorzun.com">http://www.alekseykorzun.com</a></td>
+</tr>
+</table>
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___call"></a><div class="element clickable method public method___call" data-toggle="collapse" data-target=".method___call .collapse">
+<h2>Pass all method calls directly to instance of Memcached</h2>
+<pre>__call(string $name, mixed[] $arguments) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>method that was invoked</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>mixed[]</code><p>arguments that were passed to invoked method</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method___construct"></a><div class="element clickable method public method___construct" data-toggle="collapse" data-target=".method___construct .collapse">
+<h2>Class initializer, creates a new singleton instance of Memcached
+with optimized configuration</h2>
+<pre>__construct(string $pool, array $servers) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$pool</h4>
+<code>string</code><p>create an instance of cache client with a specfic pool</p></div>
+<div class="subelement argument">
+<h4>$servers</h4>
+<code>mixed[]</code><p>a list of Memcached servers we will be using, each entry
+in servers is supposed to be an array containing hostname, port, and
+optionally, weight of the server
+Example:
+   $servers = array(
+       array('mem1.domain.com', 11211, 33),
+       array('mem2.domain.com', 11211, 67)
+ );
+See: http://www.php.net/manual/en/memcached.addservers.php</p>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="http://php.net/manual/en/class.exception.php">\Exception</a></code></th>
+<td>we want to bail if Memcached extension is not loaded or
+if passed server list is invalid</td>
+</tr></table>
+</div></div>
+</div>
+<a id="method_activate"></a><div class="element clickable method public method_activate" data-toggle="collapse" data-target=".method_activate .collapse">
+<h2>Activate caching</h2>
+<pre>activate() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_deactivate"></a><div class="element clickable method public method_deactivate" data-toggle="collapse" data-target=".method_deactivate .collapse">
+<h2>Deactivate caching</h2>
+<pre>deactivate() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_delete"></a><div class="element clickable method public method_delete" data-toggle="collapse" data-target=".method_delete .collapse">
+<h2>Delete key(s) from cache and local storage</h2>
+<pre>delete(string[] | string $keys) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$keys</h4>
+<code>string[]</code><code>string</code><p>array of keys to delete or a single key</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>returns false if it failed to delete any of the keys</div>
+</div></div>
+</div>
+<a id="method_get"></a><div class="element clickable method public method_get" data-toggle="collapse" data-target=".method_get .collapse">
+<h2>Retrieve data based on provided key from cache pool, this method
+will call either getArray or getSimple depending on amount of keys
+requested.</h2>
+<pre>get(string[] | string $keys, mixed $resource, bool $purge) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$keys</h4>
+<code>string[]</code><code>string</code><p>an array of keys or a single key to look-up from cache</p>
+</div>
+<div class="subelement argument">
+<h4>$resource</h4>
+<code>mixed</code><p>where to store retrieved resource</p></div>
+<div class="subelement argument">
+<h4>$purge</h4>
+<code>bool</code><p>if you wish to remove key from pool after retrieving resource
+associated with this you can pass this as true</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>returns true on a successful request, false on a failure or forced
+expiration</div>
+</div></div>
+</div>
+<a id="method_instance"></a><div class="element clickable method public method_instance" data-toggle="collapse" data-target=".method_instance .collapse">
+<h2>Retrieve instance of Memcached client</h2>
+<pre>instance() : <a href="http://php.net/manual/en/class.memcached.php">\Memcached</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="http://php.net/manual/en/class.memcached.php">\Memcached</a></code></div>
+</div></div>
+</div>
+<a id="method_isActive"></a><div class="element clickable method public method_isActive" data-toggle="collapse" data-target=".method_isActive .collapse">
+<h2>Check if caching is currently active</h2>
+<pre>isActive() : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>returns true if caching is active otherwise false</div>
+</div></div>
+</div>
+<a id="method_isStorageEnabled"></a><div class="element clickable method public method_isStorageEnabled" data-toggle="collapse" data-target=".method_isStorageEnabled .collapse">
+<h2>Checks if local storage is enabled</h2>
+<pre>isStorageEnabled() : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>returns true if local storage is enabled false otherwise</div>
+</div></div>
+</div>
+<a id="method_isStored"></a><div class="element clickable method public method_isStored" data-toggle="collapse" data-target=".method_isStored .collapse">
+<h2>Check if passed key is stored using local store</h2>
+<pre>isStored(string $key) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>bool</code></div>
+</div></div>
+</div>
+<a id="method_set"></a><div class="element clickable method public method_set" data-toggle="collapse" data-target=".method_set .collapse">
+<h2>Add a new cached record using passed resource and key association</h2>
+<pre>set(string $key, mixed $resource, int $ttl) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code><p>key to store passed resource under</p></div>
+<div class="subelement argument">
+<h4>$resource</h4>
+<code>mixed</code><p>resource you want to cache</p></div>
+<div class="subelement argument">
+<h4>$ttl</h4>
+<code>int</code><p>when should this key expire in seconds</p></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="http://php.net/manual/en/class.exception.php">\Exception</a></code></th>
+<td>if the key is over 250 bytes</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>bool</code></div>
+</div></div>
+</div>
+<a id="method_validateServers"></a><div class="element clickable method public method_validateServers" data-toggle="collapse" data-target=".method_validateServers .collapse">
+<h2>Validate array of cache servers that should be loaded to Memcached extension</h2>
+<pre>validateServers(array $servers) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$servers</h4>
+<code>mixed[]</code><p>a list of Memcached servers we will be using</p></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="http://php.net/manual/en/class.exception.php">\Exception</a></code></th>
+<td>if we detect something out of specification</td>
+</tr></table>
+</div></div>
+</div>
+<a id="method_getArray"></a><div class="element clickable method protected method_getArray" data-toggle="collapse" data-target=".method_getArray .collapse">
+<h2>Retrieve multiple resources from cache pool and/or local storage</h2>
+<pre>getArray(array $keys) : mixed[] | bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$keys</h4>
+<code>string[]</code><p>array of keys to look-up from cache</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed[]</code><code>bool</code>returns array of retrieved resources or false
+if look up fails</div>
+</div></div>
+</div>
+<a id="method_getSimple"></a><div class="element clickable method protected method_getSimple" data-toggle="collapse" data-target=".method_getSimple .collapse">
+<h2>Retrieve single resource from cache pool / local storage</h2>
+<pre>getSimple(string $key) : mixed | bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code><p>key to look-up from cache</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code><code>bool</code>returns cached resource or false on failure</div>
+</div></div>
+</div>
+<a id="method_store"></a><div class="element clickable method protected method_store" data-toggle="collapse" data-target=".method_store .collapse">
+<h2>Store data locally</h2>
+<pre>store(string $key, mixed $resource) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code><p>key to save resource under</p></div>
+<div class="subelement argument">
+<h4>$resource</h4>
+<code>mixed</code><p>what you are storing in cache</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>resource that we attempted to store</div>
+</div></div>
+</div>
+<a id="method_unwrap"></a><div class="element clickable method protected method_unwrap" data-toggle="collapse" data-target=".method_unwrap .collapse">
+<h2>Get requested data back into memory while setting a delayed cache entry
+if data is expiring soon</h2>
+<pre>unwrap(string $key, array $data) : mixed | bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="">\Memcached\http://highscalability.com/strategy-break-memcache-dog-pile</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code><p>key that you are retrieving</p></div>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>mixed[]</code><p>packed data that we got back from cache pool</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code><code>bool</code>returns cached resource or false if invalid data was
+passed for unwrapping</div>
+</div></div>
+</div>
+<a id="method_wrap"></a><div class="element clickable method protected method_wrap" data-toggle="collapse" data-target=".method_wrap .collapse">
+<h2>Wrap new cached resource into an array containing TTL stamp</h2>
+<pre>wrap(mixed $resource, int $ttl) : mixed[]</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="">\Memcached\http://highscalability.com/strategy-break-memcache-dog-pile</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$resource</h4>
+<code>mixed</code><p>resource that is getting cached</p></div>
+<div class="subelement argument">
+<h4>$ttl</h4>
+<code>int</code><p>internal extended expiration</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed[]</code>returns packed resource with TTL stamp to store in cache</div>
+</div></div>
+</div>
+<h3>
+<i class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_isActive"> </a><div class="element clickable property protected property_isActive" data-toggle="collapse" data-target=".property_isActive .collapse">
+<h2></h2>
+<pre>$isActive : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_isResourceExpired"> </a><div class="element clickable property protected property_isResourceExpired" data-toggle="collapse" data-target=".property_isResourceExpired .collapse">
+<h2></h2>
+<pre>$isResourceExpired : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_isResourceInvalid"> </a><div class="element clickable property protected property_isResourceInvalid" data-toggle="collapse" data-target=".property_isResourceInvalid .collapse">
+<h2></h2>
+<pre>$isResourceInvalid : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_isStorageEnabled"> </a><div class="element clickable property protected property_isStorageEnabled" data-toggle="collapse" data-target=".property_isStorageEnabled .collapse">
+<h2></h2>
+<pre>$isStorageEnabled : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_memcached"> </a><div class="element clickable property protected property_memcached" data-toggle="collapse" data-target=".property_memcached .collapse">
+<h2></h2>
+<pre>$memcached : <a href="http://php.net/manual/en/class.memcached.php">\Memcached</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_storage"> </a><div class="element clickable property protected property_storage" data-toggle="collapse" data-target=".property_storage .collapse">
+<h2></h2>
+<pre>$storage : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_DEFAULT_TTL"> </a><div class="element clickable constant  constant_DEFAULT_TTL" data-toggle="collapse" data-target=".constant_DEFAULT_TTL .collapse">
+<h2>Default life time of all caches wrapper creates in seconds</h2>
+<pre>DEFAULT_TTL : int</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_DELAY"> </a><div class="element clickable constant  constant_DELAY" data-toggle="collapse" data-target=".constant_DELAY .collapse">
+<h2>Dog-pile prevention delay in seconds, adjust if you have a constant miss
+of cache after expiration because un-cached call takes more then specified
+delay</h2>
+<pre>DELAY : int</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_EXTENDED_TTL"> </a><div class="element clickable constant  constant_EXTENDED_TTL" data-toggle="collapse" data-target=".constant_EXTENDED_TTL .collapse">
+<h2>Parent expiration padding (so internal cache stamp does not expire before
+the actual cache) in seconds</h2>
+<pre>EXTENDED_TTL : int</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a13</a> and<br>
+            generated on 2013-04-07T15:41:49-04:00.<br></footer></div>
+</div>
+</body>
+</html>
