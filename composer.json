@@ -1,9 +1,8 @@
 {
-	"name": "alekseykorzun/memcached-wrapper-php-5",
-	"type": "wrapper",
+	"name": "alekseykorzun/memcached-wrapper-php",
 	"description": "Optimized PHP 5 wrapper for Memcached extension that supports dog-piling, igbinary and local storage",
 	"keywords": ["igbinary", "c10k", "php", "php5", "memcache", "memcached", "cache", "storage", "performance", "scalability", "caching", "optimization", "profile"],
-	"homepage": "https://github.com/AlekseyKorzun/Memcached-Wrapper-PHP5",
+	"homepage": "https://github.com/AlekseyKorzun/memcached-wrapper-php",
 	"license": "MIT",
 	"authors": [
 		{
