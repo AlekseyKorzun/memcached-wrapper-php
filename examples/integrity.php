@@ -1,6 +1,6 @@
 <?php
 /**
- * Example of Memcache operations using PHP 5 wrapper, run this script twice
+ * Example of Memcached operations using PHP 5 wrapper, run this script twice
  * to complete all of the tests.
  *
  * @package Cache
@@ -8,7 +8,7 @@
  * @version 0.2
  * @license MIT
  * @author Aleksey Korzun <al.ko@webfoundation.net>
- * @link https://github.com/AlekseyKorzun/Memcached-Wrapper-PHP-5
+ * @link https://github.com/AlekseyKorzun/memcached-wrapper-php
  * @link http://www.alekseykorzun.com
  */
 

@@ -15,7 +15,7 @@ use \Memcached;
  * @author Aleksey Korzun <al.ko@webfoundation.net>
  * @version 0.2
  * @license MIT
- * @link http://www.webfoundation.net
+ * @link https://github.com/AlekseyKorzun/memcached-wrapper-php
  * @link http://www.alekseykorzun.com
  */
 class Wrapper
@@ -27,7 +27,7 @@ class Wrapper
      *
      * @var int
      */
-    const DELAY = 30;
+    const DELAY = 600;
 
     /**
      * Default life time of all caches wrapper creates in seconds
@@ -248,8 +248,8 @@ class Wrapper
 
         // Determine method of retrieval
         $resource = (is_array($keys)
-                        ? $this->getArray($keys)
-                        : $this->getSimple(str_replace(' ', '', $keys)));
+            ? $this->getArray($keys)
+            : $this->getSimple(str_replace(' ', '', $keys)));
 
         // If multi get by-pass is activated, convert result to an array
         if (isset($isDiverted)) {
@@ -365,12 +365,9 @@ class Wrapper
 
         if ($data['ttl'] > 0) {
             if (time() >= $data['ttl']) {
-                // Update TTL value with a delay
-                $data['ttl'] = time() + self::DELAY;
-
                 // Set the stale value back into cache for a short 'delay'
                 // so no one else tries to write the same data
-                if ($this->instance()->set($key, $data, self::DELAY)) {
+                if ($this->instance()->set($key, $this->wrap($data['resource'], self::DELAY), self::DELAY)) {
                     $this->isResourceExpired = true;
                 }
             }
@@ -393,7 +390,7 @@ class Wrapper
         // cache expiration system
         if ($ttl) {
             // If unix time stamp is passed as TTL make sure we properly handle it
-            if ($ttl < 60*60*24*30) {
+            if ($ttl < 60 * 60 * 24 * 30) {
                 $ttl += time();
             }
 
@@ -434,7 +431,7 @@ class Wrapper
      */
     public function isStorageEnabled()
     {
-        return (bool) $this->isStorageEnabled;
+        return (bool)$this->isStorageEnabled;
     }
 
     /**
@@ -442,7 +439,7 @@ class Wrapper
      */
     public function toggleStorage()
     {
-        $this->isStorageEnabled = (bool) !$this->isStorageEnabled;
+        $this->isStorageEnabled = (bool)!$this->isStorageEnabled;
     }
 
     /**
@@ -451,8 +448,9 @@ class Wrapper
      * @param string $key
      * @return bool
      */
-    public function isStored($key) {
-        return (bool) isset($this->storage[$key]);
+    public function isStored($key)
+    {
+        return (bool)isset($this->storage[$key]);
     }
 
     /**
@@ -478,7 +476,7 @@ class Wrapper
      */
     public function isActive()
     {
-        return (bool) $this->isActive;
+        return (bool)$this->isActive;
     }
 
     /**
@@ -495,7 +493,7 @@ class Wrapper
                 if (!is_array($server) || count($server) < 2 || count($server) > 3) {
                     throw new Exception(
                         'Invalid server parameters found in passed server array on key ' . $key . ', please see'
-                        . ' http://www.php.net/manual/en/memcached.addservers.php'
+                            . ' http://www.php.net/manual/en/memcached.addservers.php'
                     );
                 }
 
@@ -510,7 +508,7 @@ class Wrapper
                 if (!is_numeric($port) || (!is_null($weight) && !is_numeric($weight))) {
                     throw new Exception(
                         'Invalid server port and/or weight found in passed server array on key ' . $key . ', please see'
-                        . ' http://www.php.net/manual/en/memcached.addservers.php'
+                            . ' http://www.php.net/manual/en/memcached.addservers.php'
                     );
                 }
             }
@@ -522,7 +520,8 @@ class Wrapper
      *
      * @return Memcached
      */
-    public function instance() {
+    public function instance()
+    {
         return $this->memcached;
     }
 
@@ -534,7 +533,8 @@ class Wrapper
      *
      * @return mixed
      */
-    public function __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         return $this->instance()->$name(array_shift($arguments));
     }
 }
