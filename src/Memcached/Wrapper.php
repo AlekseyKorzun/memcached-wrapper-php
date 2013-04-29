@@ -1,7 +1,6 @@
 <?php
 namespace Memcached;
 
-use \ArrayObject;
 use \Exception;
 use \Memcached;
 
@@ -40,6 +39,9 @@ class Wrapper
     /**
      * Parent expiration padding (so internal cache stamp does not expire before
      * the actual cache) in seconds
+     *
+     * If expiration of your keys is set below this number you will
+     * not benefit from this optimization.
      *
      * @var int
      */
@@ -389,7 +391,19 @@ class Wrapper
     {
         // The actual cache time must be padded in order to properly maintain internal
         // cache expiration system
-        $ttl = time() + ((int) $ttl + self::EXTENDED_TTL);
+        if ($ttl) {
+            // If unix time stamp is passed as TTL make sure we properly handle it
+            if ($ttl < 60*60*24*30) {
+                $ttl += time();
+            }
+
+            // If extended TTL is greater than key TTL, skip optimization
+            if (($ttl - self::EXTENDED_TTL) > time()) {
+                $ttl -= self::EXTENDED_TTL;
+            } else {
+                $ttl = 0;
+            }
+        }
 
         return array(
             'ttl' => $ttl,
@@ -421,6 +435,14 @@ class Wrapper
     public function isStorageEnabled()
     {
         return (bool) $this->isStorageEnabled;
+    }
+
+    /**
+     * Toggle local storage
+     */
+    public function toggleStorage()
+    {
+        $this->isStorageEnabled = (bool) !$this->isStorageEnabled;
     }
 
     /**
