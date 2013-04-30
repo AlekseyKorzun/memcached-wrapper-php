@@ -310,7 +310,7 @@ class Wrapper
         // Determine method of retrieval
         $resource = (is_array($keys)
             ? $this->getArray($keys)
-            : $this->getSimple(str_replace(' ', '', $keys)));
+            : $this->getSimple($keys));
 
         // If multi get by-pass is activated, convert result to an array
         if (isset($isDiverted)) {
