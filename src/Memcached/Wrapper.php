@@ -182,6 +182,70 @@ class Wrapper
     }
 
     /**
+     * Replace resource associated with an existing key with something else
+     *
+     * @throws Exception if the key is over 250 bytes
+     * @param string $key key to replace value of
+     * @param mixed $resource resource you want existing value to be replaced with
+     * @return bool
+     */
+    public function replace($key, $resource, $ttl = self::DEFAULT_TTL)
+    {
+        // If caching is turned off return false
+        if (!$this->isActive()) {
+            return false;
+        }
+
+        // Make sure we are under the proper limit
+        if (strlen($this->instance()->getOption(Memcached::OPT_PREFIX_KEY) . $key) > 250) {
+            throw new Exception('The passed cache key is over 250 bytes');
+        }
+
+        // Save our data within cache pool
+        if ($this->instance()->replace($key, $this->wrap($resource, $ttl), $ttl)) {
+            // Attempt to store data locally
+            $this->store($key, $resource);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Add a new cached record using passed resource and key association, this
+     * method will return false if key already exists (unlike set)
+     *
+     * @throws Exception if the key is over 250 bytes
+     * @param string $key key to store passed resource under
+     * @param mixed $resource resource you want to cache
+     * @param int $ttl when should this key expire in seconds
+     * @return bool
+     */
+    public function add($key, $resource, $ttl = self::DEFAULT_TTL)
+    {
+        // If caching is turned off return false
+        if (!$this->isActive()) {
+            return false;
+        }
+
+        // Make sure we are under the proper limit
+        if (strlen($this->instance()->getOption(Memcached::OPT_PREFIX_KEY) . $key) > 250) {
+            throw new Exception('The passed cache key is over 250 bytes');
+        }
+
+        // Save our data within cache pool
+        if ($this->instance()->add($key, $this->wrap($resource, $ttl), $ttl)) {
+            // Attempt to store data locally
+            $this->store($key, $resource);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Add a new cached record using passed resource and key association
      *
      * @throws Exception if the key is over 250 bytes
@@ -196,9 +260,6 @@ class Wrapper
         if (!$this->isActive()) {
             return false;
         }
-
-        // Properly format key
-        $key = str_replace(' ', '', $key);
 
         // Make sure we are under the proper limit
         if (strlen($this->instance()->getOption(Memcached::OPT_PREFIX_KEY) . $key) > 250) {
@@ -435,11 +496,27 @@ class Wrapper
     }
 
     /**
+     * Enable local storage
+     */
+    public function enableStorage()
+    {
+        $this->isStorageEnabled = true;
+    }
+
+    /**
      * Toggle local storage
      */
     public function toggleStorage()
     {
         $this->isStorageEnabled = (bool)!$this->isStorageEnabled;
+    }
+
+    /**
+     * Disable local storage
+     */
+    public function disableStorage()
+    {
+        $this->isStorageEnabled = false;
     }
 
     /**
@@ -530,11 +607,35 @@ class Wrapper
      *
      * @param string $name method that was invoked
      * @param mixed[] $arguments arguments that were passed to invoked method
-     *
      * @return mixed
      */
     public function __call($name, $arguments)
     {
-        return $this->instance()->$name(array_shift($arguments));
+        // Methods we currently do not support
+        $blacklist = array(
+            'prepend',
+            'prependByKey',
+            'append',
+            'appendByKey',
+            'getMultiByKey',
+            'replaceByKey',
+            'setByKey',
+            'setMulti',
+            'setMultiByKey'
+        );
+
+        if (in_array($name, $blacklist)) {
+            throw new Exception(
+                'Requested method is currently not supported'
+            );
+        }
+
+        return call_user_func_array(
+            array(
+                $this->instance(),
+                $name
+            ),
+            $arguments
+        );
     }
 }
