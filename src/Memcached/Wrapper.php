@@ -1,7 +1,6 @@
 <?php
 namespace Memcached;
 
-use \ArrayObject;
 use \Exception;
 use \Memcached;
 
@@ -16,7 +15,7 @@ use \Memcached;
  * @author Aleksey Korzun <al.ko@webfoundation.net>
  * @version 0.2
  * @license MIT
- * @link http://www.webfoundation.net
+ * @link https://github.com/AlekseyKorzun/memcached-wrapper-php
  * @link http://www.alekseykorzun.com
  */
 class Wrapper
@@ -28,7 +27,7 @@ class Wrapper
      *
      * @var int
      */
-    const DELAY = 30;
+    const DELAY = 600;
 
     /**
      * Default life time of all caches wrapper creates in seconds
@@ -40,6 +39,9 @@ class Wrapper
     /**
      * Parent expiration padding (so internal cache stamp does not expire before
      * the actual cache) in seconds
+     *
+     * If expiration of your keys is set below this number you will
+     * not benefit from this optimization.
      *
      * @var int
      */
@@ -79,6 +81,13 @@ class Wrapper
      * @var bool
      */
     protected $isResourceInvalid = false;
+
+    /**
+     * Dogpile protection (wraps your cached resources into metadata array with an internal time stamp)
+     *
+     * @var bool
+     */
+    protected $isProtected = true;
 
     /**
      * Cache activation switch
@@ -180,6 +189,88 @@ class Wrapper
     }
 
     /**
+     * Replace resource associated with an existing key with something else
+     *
+     * @throws Exception if the key is over 250 bytes
+     * @param string $key key to replace value of
+     * @param mixed $resource resource you want existing value to be replaced with
+     * @return bool
+     */
+    public function replace($key, $resource, $ttl = self::DEFAULT_TTL)
+    {
+        // If caching is turned off return false
+        if (!$this->isActive()) {
+            return false;
+        }
+
+        // Make sure we are under the proper limit
+        if (strlen($this->instance()->getOption(Memcached::OPT_PREFIX_KEY) . $key) > 250) {
+            throw new Exception('The passed cache key is over 250 bytes');
+        }
+
+        // If protection is enabled, wrap the resource
+        if ($this->isProtected()) {
+            $resource = $this->wrap($resource, $ttl);
+        }
+
+        // Save our data within cache poo
+        if ($this->instance()->replace($key, $resource, $ttl)) {
+            // Attempt to store data locally, unwrap method takes care of it for protected resources
+            if ($this->isProtected()) {
+                $this->unwrap($key, $resource);
+            } else {
+                $this->store($key, $resource);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Add a new cached record using passed resource and key association, this
+     * method will return false if key already exists (unlike set)
+     *
+     * @throws Exception if the key is over 250 bytes
+     * @param string $key key to store passed resource under
+     * @param mixed $resource resource you want to cache
+     * @param int $ttl when should this key expire in seconds
+     * @return bool
+     */
+    public function add($key, $resource, $ttl = self::DEFAULT_TTL)
+    {
+        // If caching is turned off return false
+        if (!$this->isActive()) {
+            return false;
+        }
+
+        // Make sure we are under the proper limit
+        if (strlen($this->instance()->getOption(Memcached::OPT_PREFIX_KEY) . $key) > 250) {
+            throw new Exception('The passed cache key is over 250 bytes');
+        }
+
+        // If protection is enabled, wrap the resource
+        if ($this->isProtected()) {
+            $resource = $this->wrap($resource, $ttl);
+        }
+
+        // Save our data within cache pool
+        if ($this->instance()->add($key, $resource, $ttl)) {
+            // Attempt to store data locally, unwrap method takes care of it for protected resources
+            if ($this->isProtected()) {
+                $this->unwrap($key, $resource);
+            } else {
+                $this->store($key, $resource);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Add a new cached record using passed resource and key association
      *
      * @throws Exception if the key is over 250 bytes
@@ -195,18 +286,24 @@ class Wrapper
             return false;
         }
 
-        // Properly format key
-        $key = str_replace(' ', '', $key);
-
         // Make sure we are under the proper limit
         if (strlen($this->instance()->getOption(Memcached::OPT_PREFIX_KEY) . $key) > 250) {
             throw new Exception('The passed cache key is over 250 bytes');
         }
 
+        // If protection is enabled, wrap the resource
+        if ($this->isProtected()) {
+            $resource = $this->wrap($resource, $ttl);
+        }
+
         // Save our data within cache pool
-        if ($this->instance()->set($key, $this->wrap($resource, $ttl), $ttl)) {
-            // Attempt to store data locally
-            $this->store($key, $resource);
+        if ($this->instance()->set($key, $resource, $ttl)) {
+            // Attempt to store data locally, unwrap method takes care of it for protected resources
+            if ($this->isProtected()) {
+                $this->unwrap($key, $resource);
+            } else {
+                $this->store($key, $resource);
+            }
 
             return true;
         }
@@ -246,8 +343,8 @@ class Wrapper
 
         // Determine method of retrieval
         $resource = (is_array($keys)
-                        ? $this->getArray($keys)
-                        : $this->getSimple(str_replace(' ', '', $keys)));
+            ? $this->getArray($keys)
+            : $this->getSimple($keys));
 
         // If multi get by-pass is activated, convert result to an array
         if (isset($isDiverted)) {
@@ -301,7 +398,12 @@ class Wrapper
 
         if ($this->instance()->getResultCode() == Memcached::RES_SUCCESS) {
             foreach ($resources as $key => $resource) {
-                $results[$key] = $this->unwrap($key, $resource);
+                if ($this->isProtected()) {
+                    $results[$key] = $this->unwrap($key, $resource);
+                    continue;
+                }
+
+                $results[$key] = $resource;
             }
         }
 
@@ -335,7 +437,10 @@ class Wrapper
         $resource = $this->instance()->get($key);
 
         if ($this->instance()->getResultCode() == Memcached::RES_SUCCESS) {
-            return $this->unwrap($key, $resource);
+            if ($this->isProtected()) {
+                return $this->unwrap($key, $resource);
+            }
+            return $resource;
         }
 
         // Mark requested resource as invalid
@@ -363,12 +468,9 @@ class Wrapper
 
         if ($data['ttl'] > 0) {
             if (time() >= $data['ttl']) {
-                // Update TTL value with a delay
-                $data['ttl'] = time() + self::DELAY;
-
                 // Set the stale value back into cache for a short 'delay'
                 // so no one else tries to write the same data
-                if ($this->instance()->set($key, $data, self::DELAY)) {
+                if ($this->instance()->set($key, $this->wrap($data['resource'], self::DELAY), self::DELAY)) {
                     $this->isResourceExpired = true;
                 }
             }
@@ -389,12 +491,35 @@ class Wrapper
     {
         // The actual cache time must be padded in order to properly maintain internal
         // cache expiration system
-        $ttl = time() + ((int) $ttl + self::EXTENDED_TTL);
+        if ($ttl) {
+            // If unix time stamp is passed as TTL make sure we properly handle it
+            if ($ttl < 60 * 60 * 24 * 30) {
+                $ttl += time();
+            }
+
+            // If extended TTL is greater than key TTL, skip optimization
+            if (($ttl - self::EXTENDED_TTL) > time()) {
+                $ttl -= self::EXTENDED_TTL;
+            } else {
+                $ttl = 0;
+            }
+        }
 
         return array(
             'ttl' => $ttl,
             'resource' => $resource
         );
+    }
+
+    /**
+     * Check if passed key is stored using local store
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function isStored($key)
+    {
+        return (bool)isset($this->storage[$key]);
     }
 
     /**
@@ -420,17 +545,112 @@ class Wrapper
      */
     public function isStorageEnabled()
     {
-        return (bool) $this->isStorageEnabled;
+        return (bool)$this->isStorageEnabled;
     }
 
     /**
-     * Check if passed key is stored using local store
-     *
-     * @param string $key
-     * @return bool
+     * Enable local storage
      */
-    public function isStored($key) {
-        return (bool) isset($this->storage[$key]);
+    public function enableStorage()
+    {
+        $this->isStorageEnabled = true;
+    }
+
+    /**
+     * Toggle local storage
+     */
+    public function toggleStorage()
+    {
+        $this->isStorageEnabled = (bool)!$this->isStorageEnabled;
+    }
+
+    /**
+     * Disable local storage
+     */
+    public function disableStorage()
+    {
+        $this->isStorageEnabled = false;
+    }
+
+    /**
+     * Check if race condition protection is enabled
+     *
+     * @return bool returns true if protection is enabled
+     */
+    public function isProtected()
+    {
+        return (bool)$this->isProtected;
+    }
+
+    /**
+     * Enable race condition protection
+     */
+    public function enableProtection()
+    {
+        $this->isProtected = true;
+    }
+
+    /**
+     * Toggle race condition protection
+     */
+    public function toggleProtection()
+    {
+        $this->isProtected = (bool)!$this->isProtected;
+    }
+
+    /**
+     * Disable race condition protection
+     */
+    public function disableProtection()
+    {
+        $this->isProtected = false;
+    }
+
+    /**
+     * Check if data compression is enabled
+     *
+     * @return bool returns true if data compression is enabled
+     */
+    public function isCompressed()
+    {
+        return (bool)$this->instance()->getOption(Memcached::OPT_COMPRESSION);
+    }
+
+    /**
+     * Enable data compression
+     */
+    public function enableCompression()
+    {
+        $this->instance()->getOption(Memcached::OPT_COMPRESSION, true);
+    }
+
+    /**
+     * Toggle data compression
+     */
+    public function toggleCompression()
+    {
+        $this->instance()->setOption(
+            Memcached::OPT_COMPRESSION,
+            (bool)!$this->instance()->getOption(Memcached::OPT_COMPRESSION)
+        );
+    }
+
+    /**
+     * Disable data compression
+     */
+    public function disableCompression()
+    {
+        $this->instance()->setOption(Memcached::OPT_COMPRESSION, false);
+    }
+
+    /**
+     * Toggle all of the custom options
+     */
+    public function toggleAll()
+    {
+        $this->toggleStorage();
+        $this->toggleCompression();
+        $this->toggleProtection();
     }
 
     /**
@@ -456,7 +676,7 @@ class Wrapper
      */
     public function isActive()
     {
-        return (bool) $this->isActive;
+        return (bool)$this->isActive;
     }
 
     /**
@@ -500,7 +720,8 @@ class Wrapper
      *
      * @return Memcached
      */
-    public function instance() {
+    public function instance()
+    {
         return $this->memcached;
     }
 
@@ -509,10 +730,63 @@ class Wrapper
      *
      * @param string $name method that was invoked
      * @param mixed[] $arguments arguments that were passed to invoked method
-     *
      * @return mixed
      */
-    public function __call($name, $arguments) {
-        return $this->instance()->$name(array_shift($arguments));
+    public function __call($name, $arguments)
+    {
+        // Methods we currently do not support
+        $blacklist = array(
+            'getMultiByKey',
+            'replaceByKey',
+            'setByKey',
+            'setMulti',
+            'setMultiByKey'
+        );
+
+        if (in_array($name, $blacklist)) {
+            throw new Exception(
+                'Requested method is currently not supported'
+            );
+        }
+
+        // Methods that should not be protected/compressed/covered by local storage
+        $unprotected = array(
+            'prependByKey',
+            'appendByKey',
+            'append',
+            'prepend',
+            'increment',
+            'decrement',
+            'decrementByKey',
+            'incrementByKey',
+        );
+
+        if (in_array($name, $unprotected)) {
+            if ($this->isProtected()) {
+                throw new Exception(
+                    'Please turn off race condition protection when using this method.'
+                );
+            }
+
+            if ($this->isStorageEnabled()) {
+                throw new Exception(
+                    'Please turn off storage when using this method.'
+                );
+            }
+
+            if ($this->isCompressed()) {
+                throw new Exception(
+                    'Please turn off compression when using this method.'
+                );
+            }
+        }
+
+        return call_user_func_array(
+            array(
+                $this->instance(),
+                $name
+            ),
+            $arguments
+        );
     }
 }
