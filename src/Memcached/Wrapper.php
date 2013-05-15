@@ -83,6 +83,13 @@ class Wrapper
     protected $isResourceInvalid = false;
 
     /**
+     * Dogpile protection (wraps your cached resources into metadata array with an internal time stamp)
+     *
+     * @var bool
+     */
+    protected $isProtected = true;
+
+    /**
      * Cache activation switch
      *
      * @var bool
@@ -201,10 +208,19 @@ class Wrapper
             throw new Exception('The passed cache key is over 250 bytes');
         }
 
-        // Save our data within cache pool
-        if ($this->instance()->replace($key, $this->wrap($resource, $ttl), $ttl)) {
-            // Attempt to store data locally
-            $this->store($key, $resource);
+        // If protection is enabled, wrap the resource
+        if ($this->isProtected()) {
+            $resource = $this->wrap($resource, $ttl);
+        }
+
+        // Save our data within cache poo
+        if ($this->instance()->replace($key, $resource, $ttl)) {
+            // Attempt to store data locally, unwrap method takes care of it for protected resources
+            if ($this->isProtected()) {
+                $this->unwrap($key, $resource);
+            } else {
+                $this->store($key, $resource);
+            }
 
             return true;
         }
@@ -234,10 +250,19 @@ class Wrapper
             throw new Exception('The passed cache key is over 250 bytes');
         }
 
+        // If protection is enabled, wrap the resource
+        if ($this->isProtected()) {
+            $resource = $this->wrap($resource, $ttl);
+        }
+
         // Save our data within cache pool
-        if ($this->instance()->add($key, $this->wrap($resource, $ttl), $ttl)) {
-            // Attempt to store data locally
-            $this->store($key, $resource);
+        if ($this->instance()->add($key, $resource, $ttl)) {
+            // Attempt to store data locally, unwrap method takes care of it for protected resources
+            if ($this->isProtected()) {
+                $this->unwrap($key, $resource);
+            } else {
+                $this->store($key, $resource);
+            }
 
             return true;
         }
@@ -266,10 +291,19 @@ class Wrapper
             throw new Exception('The passed cache key is over 250 bytes');
         }
 
+        // If protection is enabled, wrap the resource
+        if ($this->isProtected()) {
+            $resource = $this->wrap($resource, $ttl);
+        }
+
         // Save our data within cache pool
-        if ($this->instance()->set($key, $this->wrap($resource, $ttl), $ttl)) {
-            // Attempt to store data locally
-            $this->store($key, $resource);
+        if ($this->instance()->set($key, $resource, $ttl)) {
+            // Attempt to store data locally, unwrap method takes care of it for protected resources
+            if ($this->isProtected()) {
+                $this->unwrap($key, $resource);
+            } else {
+                $this->store($key, $resource);
+            }
 
             return true;
         }
@@ -364,7 +398,12 @@ class Wrapper
 
         if ($this->instance()->getResultCode() == Memcached::RES_SUCCESS) {
             foreach ($resources as $key => $resource) {
-                $results[$key] = $this->unwrap($key, $resource);
+                if ($this->isProtected()) {
+                    $results[$key] = $this->unwrap($key, $resource);
+                    continue;
+                }
+
+                $results[$key] = $resource;
             }
         }
 
@@ -398,7 +437,10 @@ class Wrapper
         $resource = $this->instance()->get($key);
 
         if ($this->instance()->getResultCode() == Memcached::RES_SUCCESS) {
-            return $this->unwrap($key, $resource);
+            if ($this->isProtected()) {
+                return $this->unwrap($key, $resource);
+            }
+            return $resource;
         }
 
         // Mark requested resource as invalid
@@ -470,6 +512,17 @@ class Wrapper
     }
 
     /**
+     * Check if passed key is stored using local store
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function isStored($key)
+    {
+        return (bool)isset($this->storage[$key]);
+    }
+
+    /**
      * Store data locally
      *
      * @param string $key key to save resource under
@@ -520,14 +573,84 @@ class Wrapper
     }
 
     /**
-     * Check if passed key is stored using local store
+     * Check if race condition protection is enabled
      *
-     * @param string $key
-     * @return bool
+     * @return bool returns true if protection is enabled
      */
-    public function isStored($key)
+    public function isProtected()
     {
-        return (bool)isset($this->storage[$key]);
+        return (bool)$this->isProtected;
+    }
+
+    /**
+     * Enable race condition protection
+     */
+    public function enableProtection()
+    {
+        $this->isProtected = true;
+    }
+
+    /**
+     * Toggle race condition protection
+     */
+    public function toggleProtection()
+    {
+        $this->isProtected = (bool)!$this->isProtected;
+    }
+
+    /**
+     * Disable race condition protection
+     */
+    public function disableProtection()
+    {
+        $this->isProtected = false;
+    }
+
+    /**
+     * Check if data compression is enabled
+     *
+     * @return bool returns true if data compression is enabled
+     */
+    public function isCompressed()
+    {
+        return (bool)$this->instance()->getOption(Memcached::OPT_COMPRESSION);
+    }
+
+    /**
+     * Enable data compression
+     */
+    public function enableCompression()
+    {
+        $this->instance()->getOption(Memcached::OPT_COMPRESSION, true);
+    }
+
+    /**
+     * Toggle data compression
+     */
+    public function toggleCompression()
+    {
+        $this->instance()->setOption(
+            Memcached::OPT_COMPRESSION,
+            (bool)!$this->instance()->getOption(Memcached::OPT_COMPRESSION)
+        );
+    }
+
+    /**
+     * Disable data compression
+     */
+    public function disableCompression()
+    {
+        $this->instance()->setOption(Memcached::OPT_COMPRESSION, false);
+    }
+
+    /**
+     * Toggle all of the custom options
+     */
+    public function toggleAll()
+    {
+        $this->toggleStorage();
+        $this->toggleCompression();
+        $this->toggleProtection();
     }
 
     /**
@@ -570,7 +693,7 @@ class Wrapper
                 if (!is_array($server) || count($server) < 2 || count($server) > 3) {
                     throw new Exception(
                         'Invalid server parameters found in passed server array on key ' . $key . ', please see'
-                            . ' http://www.php.net/manual/en/memcached.addservers.php'
+                        . ' http://www.php.net/manual/en/memcached.addservers.php'
                     );
                 }
 
@@ -585,7 +708,7 @@ class Wrapper
                 if (!is_numeric($port) || (!is_null($weight) && !is_numeric($weight))) {
                     throw new Exception(
                         'Invalid server port and/or weight found in passed server array on key ' . $key . ', please see'
-                            . ' http://www.php.net/manual/en/memcached.addservers.php'
+                        . ' http://www.php.net/manual/en/memcached.addservers.php'
                     );
                 }
             }
@@ -613,10 +736,6 @@ class Wrapper
     {
         // Methods we currently do not support
         $blacklist = array(
-            'prepend',
-            'prependByKey',
-            'append',
-            'appendByKey',
             'getMultiByKey',
             'replaceByKey',
             'setByKey',
@@ -628,6 +747,38 @@ class Wrapper
             throw new Exception(
                 'Requested method is currently not supported'
             );
+        }
+
+        // Methods that should not be protected/compressed/covered by local storage
+        $unprotected = array(
+            'prependByKey',
+            'appendByKey',
+            'append',
+            'prepend',
+            'increment',
+            'decrement',
+            'decrementByKey',
+            'incrementByKey',
+        );
+
+        if (in_array($name, $unprotected)) {
+            if ($this->isProtected()) {
+                throw new Exception(
+                    'Please turn off race condition protection when using this method.'
+                );
+            }
+
+            if ($this->isStorageEnabled()) {
+                throw new Exception(
+                    'Please turn off storage when using this method.'
+                );
+            }
+
+            if ($this->isCompressed()) {
+                throw new Exception(
+                    'Please turn off compression when using this method.'
+                );
+            }
         }
 
         return call_user_func_array(
