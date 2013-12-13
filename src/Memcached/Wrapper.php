@@ -621,7 +621,7 @@ class Wrapper
      */
     public function enableCompression()
     {
-        $this->instance()->getOption(Memcached::OPT_COMPRESSION, true);
+        $this->instance()->setOption(Memcached::OPT_COMPRESSION, true);
     }
 
     /**
