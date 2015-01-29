@@ -169,8 +169,8 @@ class Wrapper
             foreach ($keys as $key) {
                 // Attempt to remove data from Memcached pool
                 if (!$this->instance()->delete($key)) {
-                    // If we were unable to remove it only care if resource was not stored
-                    if ($this->instance()->getResultCode() != Memcached::RES_NOTSTORED) {
+                    // If we were unable to remove it only care if the error wasn't RES_NOTFOUND
+                    if ($this->instance()->getResultCode() != Memcached::RES_NOTFOUND) {
                         return false;
                     }
                 }
